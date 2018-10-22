@@ -3,4 +3,10 @@
 
 int _putchar(char c);
 
+typedef struct func
+{
+	char *spec;
+	int (*fn)(va_list);
+} printf;
+
 #endif
