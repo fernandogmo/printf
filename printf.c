@@ -1,4 +1,5 @@
-#include "holberton.h" /* _putchar */
+#include "holberton.h"
+#include "funcs_array.h"
 
 /**
  * _printf - prints to stdout according to a format string
@@ -9,17 +10,13 @@ int _printf(const char *format, ...)
 {
 	int i, count = 0;
 	va_list ap;
-	print_t funcs[] = {
-		{"c", print_char},
-		{"s", print_string},
-		{"d", print_int},
-		{"i", print_int},
-		{"u", print_unsigned},
-		{"o", print_octal},
-		{NULL, NULL}
-	};
+
 	va_start(ap, format);
-	for (i = 0; format != NULL && format[i] != '\0'; i++)
+
+	if (format == NULL)
+		return (-1);
+
+	for (i = 0; format[i] != '\0'; i++)
 	{
 		if (format[i] != '%')
 		{
@@ -37,7 +34,7 @@ int _printf(const char *format, ...)
 		case 'i':
 		case 'u':
 		case 'o':
-			count += call_print_fn(format[i], funcs, ap);
+			count += call_print_fn(format[i], ap);
 			break;
 		default:
 			if (!format[i])
@@ -48,5 +45,28 @@ int _printf(const char *format, ...)
 		}
 	}
 	va_end(ap);
+	return (count);
+}
+
+
+/**
+ * call_print_fn - call appropriate print fn
+ * @ch: format string character
+ * @ap: object to be printed
+ * Return: number of characters printed
+ */
+int call_print_fn(char ch, va_list ap)
+{
+	int j;
+	int count = 0;
+
+	for (j = 0; funcs[j].spec != NULL; j++)
+	{
+		if (ch == funcs[j].spec[0])
+		{
+			count += funcs[j].fn(ap);
+			break;
+		}
+	}
 	return (count);
 }
